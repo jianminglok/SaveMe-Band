@@ -17,18 +17,18 @@ TinyGsm modem(debugger);
 TinyGsm modem(SerialAT);
 #endif
 
-int btn = 11;
+int btn = 4;
 int ledPin = 13;
-int ledState = LOW;  
-int val = 0;   
+int ledState = LOW;
+int val = 0;
 
-int buttonState; 
-int lastButtonState = HIGH; 
+int buttonState;
+int lastButtonState = HIGH;
 
 String imei;
 
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 50; 
+unsigned long debounceDelay = 50;
 
 void setup() {
 
@@ -37,7 +37,7 @@ void setup() {
 
   // set initial LED state
   digitalWrite(ledPin, ledState);
-  
+
   Serial.begin(115200);
 
   delay(10);
@@ -74,7 +74,7 @@ void loop() {
   String gps_used_satellites;
   String gps_fixstatus = modem.getGPS(&gps_latitude, &gps_longitude, &gps_speed, &gps_altitude, &gps_view_satellites, &gps_used_satellites);
   if ( gps_fixstatus ) {
-    
+
     Serial.print(F("#GPS Location: LAT: "));
     Serial.println(gps_latitude);
     Serial.print(F(" LONG: "));
@@ -87,15 +87,15 @@ void loop() {
     Serial.println(gps_view_satellites);
     Serial.print(F(" VIEWED STELITES: "));
     Serial.println(gps_used_satellites);
-  
+
     int year, month, day, hour, minute, second;
     if ( modem.getGPSTime(&gps_year, &gps_month, &gps_day, &gps_hour, &gps_minute, &gps_second) ) {
       //Sync time if it's diffrent.
       set_time(gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second);
     }
-    
+
 }
-  
+
   // put your main code here, to run repeatedly:
   val = digitalRead(btn);  // read input value
 
@@ -140,4 +140,3 @@ void sendSMS() {
   DBG("SMS:", res ? "OK" : "fail");
 
 }
-
