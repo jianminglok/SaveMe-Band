@@ -1,12 +1,15 @@
 #include <SPI.h>
 #include <Wire.h>
-#include <min.h>
+#include <Adafruit_GFX.h>
+#include <displayMod.h>
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
-
-
+//VCC to 5v
+//GND to GND
+//SCL to arduino pin A5
+//SDA to arduino pin A4
 void setup(){
 
   Serial.begin(115200);
