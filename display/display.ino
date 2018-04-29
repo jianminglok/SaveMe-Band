@@ -1,10 +1,10 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
-#include <displayMod.h>
+#include <displayMod.h>//big library
 
 #define OLED_RESET 4
-Adafruit_SSD1306 display(OLED_RESET);
+displayMod display(OLED_RESET);
 
 //VCC to 5v
 //GND to GND
@@ -26,6 +26,7 @@ void setup(){
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.println("SaveMe Band");
+  display.println("");
   display.display();//to show uploaded text
 
 }
