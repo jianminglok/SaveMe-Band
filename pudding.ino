@@ -1,8 +1,9 @@
-#define TINY_GSM_MODEM_SIM868;
+#define TINY_GSM_MODEM_SIM808;
 #define SMS_TARGET  "+60132699212" //target receiver
 
-#include <TinyGsmClient.h>;
-#include <SoftwareSerial.h>;
+#include <TinyGsmClient.h>
+#include <SoftwareSerial.h>
+//#include <CurieTime.h>
 
 SoftwareSerial SerialAT(2, 3); // RX, TX for sim868
 
@@ -66,13 +67,13 @@ void setup() {
 void loop() {
 
   modem.enableGPS();
-  String gps_latitude;
-  String gps_longitude;
-  String gps_speed;
-  String gps_altitude;
-  String gps_view_satellites;
-  String gps_used_satellites;
-  String gps_fixstatus = modem.getGPS(&gps_latitude, &gps_longitude, &gps_speed, &gps_altitude, &gps_view_satellites, &gps_used_satellites);
+  float gps_latitude;
+  float gps_longitude;
+  float gps_speed;
+  int gps_altitude;
+  int gps_view_satellites;
+  int gps_used_satellites;
+  bool gps_fixstatus = modem.getGPS(&gps_latitude, &gps_longitude, &gps_speed, &gps_altitude, &gps_view_satellites, &gps_used_satellites);
   if ( gps_fixstatus ) {
     
     Serial.print(F("#GPS Location: LAT: "));
@@ -88,10 +89,11 @@ void loop() {
     Serial.print(F(" VIEWED STELITES: "));
     Serial.println(gps_used_satellites);
   
-    int year, month, day, hour, minute, second;
+    int gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second;
     if ( modem.getGPSTime(&gps_year, &gps_month, &gps_day, &gps_hour, &gps_minute, &gps_second) ) {
       //Sync time if it's diffrent.
-      set_time(gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second);
+      //setTime(gps_hour, gps_minute, gps_second, gps_day, gps_month, gps_year);
+      //set_time(gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second);
     }
     
 }
