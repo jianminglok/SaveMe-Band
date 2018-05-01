@@ -1,4 +1,4 @@
-#define TINY_GSM_MODEM_SIM808;
+#define TINY_GSM_MODEM_SIM868;
 #define SMS_TARGET  "+60132699212" //target receiver
 
 #include <TinyGsmClient.h>
@@ -18,18 +18,18 @@ TinyGsm modem(debugger);
 TinyGsm modem(SerialAT);
 #endif
 
-int btn = 11;
+int btn = 4;
 int ledPin = 13;
-int ledState = LOW;  
-int val = 0;   
+int ledState = LOW;
+int val = 0;
 
-int buttonState; 
-int lastButtonState = HIGH; 
+int buttonState;
+int lastButtonState = HIGH;
 
 String imei;
 
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
-unsigned long debounceDelay = 50; 
+unsigned long debounceDelay = 50;
 
 void setup() {
 
