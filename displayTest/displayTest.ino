@@ -25,29 +25,15 @@ void setup(){
   // internally, this will display the splashscreen.
   display.println();
   display.setCursor(0,0);
-  display.setTextSize(3);
+  display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.println("SaveMe Band");
+  display.println("SaveMeBand");
   display.println();
   display.println();
   display.display();//to show uploaded text
-  delay(1000);
-  display.clearDisplay();
+
 }
 
 void loop(){
 
-  display.setTextSize(2);
-  display.println(hr + ":" + min);
-  display.setTextSize(1);
-  display.println("Fri 20,7");
-  display.println();
-  display.display();
-  ++ min;
-  if(min == 60){
-    min = 0;
-    ++hr;
-  }
-  delay(1000);
-  display.clearDisplay();
 }
