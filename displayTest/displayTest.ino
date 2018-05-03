@@ -1,9 +1,13 @@
 #include <SPI.h>
 #include <Wire.h>
+#include <Adafruit_GFX.h>
 #include <DisplayMod.h>//big library
 
 #define OLED_RESET 4
 DisplayMod display(OLED_RESET);
+
+int hr = 4;
+int min = 20;
 
 
 //VCC to 5v
@@ -19,50 +23,31 @@ void setup(){
   // Show image buffer on the display hardware.
   // Since the buffer is intialized with an Adafruit splashscreen
   // internally, this will display the splashscreen.
+  display.println();
   display.setCursor(0,0);
   display.setTextSize(3);
   display.setTextColor(WHITE);
   display.println("SaveMe Band");
+  display.println();
+  display.println();
   display.display();//to show uploaded text
   delay(1000);
-
-}
-
-void week(int x){
-  //to get what week is it
-  String week;
-  switch (x) {
-    case(1):
-      week = "Sun";
-      break;
-    case(2):
-      week = "Mon";
-      break;
-    case(3):
-      week = "Tue";
-      break;
-    case(4):
-      week = "Wed";
-      break;
-    case(5):
-      week = "Thu";
-      break;
-    case(6):
-      week = "Fri";
-      break;
-    case(7):
-      week = "Sat";
-      break;
-  }
-  return x;
+  display.clearDisplay();
 }
 
 void loop(){
 
-  display.clearDisplay();
   display.setTextSize(2);
-  display.println(hour() + ":" + minute());
+  display.println(hr + ":" + min);
   display.setTextSize(1);
-  display.println(week(weekday()) + "," + day() + "," + month());
-
+  display.println("Fri 20,7");
+  display.println();
+  display.display();
+  ++ min;
+  if(min == 60){
+    min = 0;
+    ++hr;
+  }
+  delay(1000);
+  display.clearDisplay();
 }
