@@ -70,6 +70,10 @@ void setup() {
 
 void loop() {
 
+  // This is only supported on SIMxxx series, used as an alternative for GPS
+  String gsmLoc = modem.getGsmLocation();
+  DBG("GSM location:", gsmLoc); 
+
   bool gps_fixstatus = modem.getGPS(&gps_latitude, &gps_longitude, &gps_speed, &gps_altitude, &gps_view_satellites, &gps_used_satellites);
   if ( gps_fixstatus ) {
     
