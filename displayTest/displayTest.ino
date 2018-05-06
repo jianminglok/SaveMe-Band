@@ -1,6 +1,5 @@
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
 #include <DisplayMod.h>//big library
 
 #define OLED_RESET 4
@@ -16,7 +15,6 @@ int min = 20;
 //SDA to arduino pin A4
 void setup(){
 
-  Serial.begin(115200);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C
 

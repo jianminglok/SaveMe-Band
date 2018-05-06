@@ -7,7 +7,7 @@
 #include <StreamDebugger.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <DisplayMod.h>//big library
+#include <DisplayMod.h>
 
 //initiallize software serial
 #define SerialMon Serial
@@ -27,17 +27,19 @@ TinyGsm modem(SerialAT);
 #define OLED_RESET 4
 DisplayMod display(OLED_RESET);
 
-int btn = 8;
-int val = 0;
 
+//below here is a bunce of variables
+#define btn 8//variables for button
+int val = 0;
 int buttonState;
 int lastButtonState = HIGH;
-
-String imei;
-
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
 unsigned long debounceDelay = 50;
 
+//gsm thingie
+String imei;
+
+//gps things
 float gps_latitude;
 float gps_longitude;
 float gps_speed;
@@ -47,7 +49,7 @@ int gps_used_satellites;
 
 void setup() {
 
-  pinMode(btn, INPUT);
+  pinMode(btn, INPUT);//set pin 8 as INPUT
 
   SerialMon.begin(115200);
 
@@ -56,13 +58,18 @@ void setup() {
   //something like a boot up screen
   display.setCursor(0,0);
   display.setTextSize(2);
-  display.setTextColor(WHITE);
   display.println("SaveMeBand");
+
+  
   delay(10);
+
   // Set your reset, enable, power pins here
   delay(3000);
-  display.clearDisplay()
-;  // Set GSM module baud rate
+  
+  display.clearDisplay(); 
+  display.println("Started");
+  display.display();
+  // Set GSM module baud rate
   TinyGsmAutoBaud(SerialAT);
 
   // Restart takes quite some time
@@ -79,6 +86,7 @@ void setup() {
   modem.enableGPS();
 
 }
+
 
 void loop() {
 
