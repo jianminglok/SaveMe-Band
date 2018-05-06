@@ -1,24 +1,31 @@
 #define TINY_GSM_MODEM_SIM868
-#define SMS_TARGET  "+60109829252" //target receiver
+#define SMS_TARGET  "+60132699212" //target receiver
 
 #include <TinyGsmClient.h>
 #include <SoftwareSerial.h>
 #include <TimeLib.h>
+#include <StreamDebugger.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <DisplayMod.h>//big library
 
+//initiallize software serial
 #define SerialMon Serial
-
 SoftwareSerial SerialAT(2, 3); // RX, TX for sim868
 
 #define DUMP_AT_COMMANDS
 #define TINY_GSM_DEBUG SerialMon
 
 #ifdef DUMP_AT_COMMANDS
-#include <StreamDebugger.h>
 StreamDebugger debugger(SerialAT, SerialMon);
 TinyGsm modem(debugger);
 #else
 TinyGsm modem(SerialAT);
 #endif
+
+//initiate oled display
+#define OLED_RESET 4
+DisplayMod display(OLED_RESET);
 
 int btn = 8;
 int val = 0;
@@ -44,13 +51,18 @@ void setup() {
 
   SerialMon.begin(115200);
 
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C
+
+  //something like a boot up screen
+  display.setCursor(0,0);
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.println("SaveMeBand");
   delay(10);
-
   // Set your reset, enable, power pins here
-
   delay(3000);
-
-  // Set GSM module baud rate
+  display.clearDisplay()
+;  // Set GSM module baud rate
   TinyGsmAutoBaud(SerialAT);
 
   // Restart takes quite some time
@@ -72,11 +84,16 @@ void loop() {
 
   // This is only supported on SIMxxx series, used as an alternative for GPS
   String gsmLoc = modem.getGsmLocation();
-  DBG("GSM location:", gsmLoc); 
+  DBG("GSM location:", gsmLoc);
 
   bool gps_fixstatus = modem.getGPS(&gps_latitude, &gps_longitude, &gps_speed, &gps_altitude, &gps_view_satellites, &gps_used_satellites);
   if ( gps_fixstatus ) {
-    
+    //display data on oled display
+    display.println(gps_latitude);
+    display.println(gps_longitude);
+    display.display();
+
+    //display data in serial
     debugger.print(F("#GPS Location: LAT: "));
     debugger.println(gps_latitude);
     debugger.print(F(" LONG: "));
@@ -89,14 +106,14 @@ void loop() {
     debugger.println(gps_view_satellites);
     debugger.print(F(" VIEWED STELITES: "));
     debugger.println(gps_used_satellites);
-  
+
     int gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second;
     if ( modem.getGPSTime(&gps_year, &gps_month, &gps_day, &gps_hour, &gps_minute, &gps_second) ) {
       //Sync time if it's diffrent.
       setTime(gps_hour, gps_minute, gps_second, gps_day, gps_month, gps_year);
       //set_time(gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second);
     }
-    
+
   }
 
   // put your main code here, to run repeatedly:
@@ -139,5 +156,3 @@ void sendSMS() {
   DBG("SMS:", res ? "OK" : "fail");
 
 }
-
-
