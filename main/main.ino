@@ -59,6 +59,8 @@ void setup() {
   display.println("SaveMeBand");
   display.display();
 
+  Serial.begin(115200);
+
   SerialMon.begin(115200);
 
   delay(10);
