@@ -4,10 +4,9 @@
 #include <TinyGsmClient.h>
 #include <SoftwareSerial.h>
 #include <TimeLib.h>
-#include <StreamDebugger.h>
 #include <SPI.h>
 #include <Wire.h>
-#include <DisplayMod.h>//big library
+#include <DisplayMod.h>
 
 //initiallize software serial
 #define SerialMon Serial
@@ -18,6 +17,7 @@ SoftwareSerial SerialAT(2, 3); // RX, TX for sim868
 #define TINY_GSM_DEBUG SerialMon
 
 #ifdef DUMP_AT_COMMANDS
+#include <StreamDebugger.h>
 StreamDebugger debugger(SerialAT, SerialMon);
 TinyGsm modem(debugger);
 #else
@@ -28,17 +28,19 @@ TinyGsm modem(SerialAT);
 #define OLED_RESET 4
 DisplayMod display(OLED_RESET);
 
-int btn = 8;
-int val = 0;
 
+//below here is a bunce of variables
+#define btn 8//variables for button
+int val = 0;
 int buttonState;
 int lastButtonState = HIGH;
-
-String imei;
-
 unsigned long lastDebounceTime = 0;  // the last time the output pin was toggled
 unsigned long debounceDelay = 50;
 
+//gsm thingie
+String imei;
+
+//gps things
 float gps_latitude;
 float gps_longitude;
 float gps_speed;
@@ -48,44 +50,50 @@ int gps_used_satellites;
 
 void setup() {
 
-  pinMode(btn, INPUT);
+  pinMode(btn, INPUT);//set pin 8 as INPUT
+
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C
+  display.setCursor(0,0);//something like a boot up screen
+  display.setTextSize(2);
+  display.println("SaveMeBand");
+  display.display();
 
   SerialMon.begin(115200);
 
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C
-
-  //something like a boot up screen
-  display.setCursor(0,0);
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.println("SaveMeBand");
   delay(10);
+
   // Set your reset, enable, power pins here
   delay(3000);
-  display.clearDisplay();  
+
+  display.clearDisplay();
+  display.setCursor(0,0);
+  display.println("Started");
+  display.display();
   // Set GSM module baud rate
   TinyGsmAutoBaud(SerialAT);
 
   // Restart takes quite some time
   // To skip it, call init() instead of restart()
-  DBG("Initializing modem...");
+  //DBG("Initializing modem...");
   modem.init();
 
   String modemInfo = modem.getModemInfo();
-  DBG("Modem:", modemInfo);
+  //DBG("Modem:", modemInfo);
 
   imei = modem.getIMEI();
-  DBG("IMEI:", imei);
+  //DBG("IMEI:", imei);
 
   modem.enableGPS();
 
 }
 
+
 void loop() {
 
   // This is only supported on SIMxxx series, used as an alternative for GPS
   String gsmLoc = modem.getGsmLocation();
-  DBG("GSM location:", gsmLoc);
+  Serial.println("GSM location:" + gsmLoc);
 
   bool gps_fixstatus = modem.getGPS(&gps_latitude, &gps_longitude, &gps_speed, &gps_altitude, &gps_view_satellites, &gps_used_satellites);
   if ( gps_fixstatus ) {
@@ -95,18 +103,18 @@ void loop() {
     display.display();
 
     //display data in serial
-    debugger.print(F("#GPS Location: LAT: "));
-    debugger.println(gps_latitude);
-    debugger.print(F(" LONG: "));
-    debugger.println(gps_longitude);
-    debugger.print(F(" SPEED: "));
-    debugger.println(gps_speed);
-    debugger.print(F(" ALTITUDE: "));
-    debugger.println(gps_altitude);
-    debugger.print(F(" USED SATELITES: "));
-    debugger.println(gps_view_satellites);
-    debugger.print(F(" VIEWED STELITES: "));
-    debugger.println(gps_used_satellites);
+    Serial.print(F("#GPS Location: LAT: "));
+    Serial.println(gps_latitude);
+    Serial.print(F(" LONG: "));
+    Serial.println(gps_longitude);
+    Serial.print(F(" SPEED: "));
+    Serial.println(gps_speed);
+    Serial.print(F(" ALTITUDE: "));
+    Serial.println(gps_altitude);
+    Serial.print(F(" USED SATELITES: "));
+    Serial.println(gps_view_satellites);
+    Serial.print(F(" VIEWED STELITES: "));
+    Serial.println(gps_used_satellites);
 
     int gps_year, gps_month, gps_day, gps_hour, gps_minute, gps_second;
     if ( modem.getGPSTime(&gps_year, &gps_month, &gps_day, &gps_hour, &gps_minute, &gps_second) ) {
@@ -137,10 +145,10 @@ void loop() {
     // if the button state has changed:
     // only toggle the LED if the new button state is HIGH
       if (val == HIGH) {
-        debugger.println("Button is not pushed");  // turn LED OFF
+        Serial.println("Button is not pushed");  // turn LED OFF
       } else {
         // turn LED off:
-        debugger.println("Button is pushed");
+        Serial.println("Button is pushed");
         sendSMS();  // turn LED ON
       }
     }
