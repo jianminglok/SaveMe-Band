@@ -51,22 +51,22 @@ void setup() {
 
   pinMode(btn, INPUT);//set pin 8 as INPUT
 
-  SerialMon.begin(115200);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C
-
-  //something like a boot up screen
-  display.setCursor(0,0);
+  display.setCursor(0,0);//something like a boot up screen
   display.setTextSize(2);
   display.println("SaveMeBand");
+  display.display();
 
-  
+  SerialMon.begin(115200);
+
   delay(10);
 
   // Set your reset, enable, power pins here
   delay(3000);
-  
-  display.clearDisplay(); 
+
+  display.clearDisplay();
+  display.setCursor(0,0);
   display.println("Started");
   display.display();
   // Set GSM module baud rate
@@ -74,14 +74,14 @@ void setup() {
 
   // Restart takes quite some time
   // To skip it, call init() instead of restart()
-  DBG("Initializing modem...");
+  //DBG("Initializing modem...");
   modem.init();
 
   String modemInfo = modem.getModemInfo();
-  DBG("Modem:", modemInfo);
+  //DBG("Modem:", modemInfo);
 
   imei = modem.getIMEI();
-  DBG("IMEI:", imei);
+  //DBG("IMEI:", imei);
 
   modem.enableGPS();
 
