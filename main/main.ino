@@ -13,7 +13,8 @@
 #define SerialMon Serial
 SoftwareSerial SerialAT(2, 3); // RX, TX for sim868
 
-#define DUMP_AT_COMMANDS
+// Disable AT command log spam for now
+// #define DUMP_AT_COMMANDS 
 #define TINY_GSM_DEBUG SerialMon
 
 #ifdef DUMP_AT_COMMANDS
@@ -61,8 +62,8 @@ void setup() {
   delay(10);
   // Set your reset, enable, power pins here
   delay(3000);
-  display.clearDisplay()
-;  // Set GSM module baud rate
+  display.clearDisplay();  
+  // Set GSM module baud rate
   TinyGsmAutoBaud(SerialAT);
 
   // Restart takes quite some time
