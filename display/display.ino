@@ -5,6 +5,8 @@
 #define OLED_RESET 4
 DisplayMod display(OLED_RESET);
 
+int count = 0;
+
 
 //VCC to 5v
 //GND to GND
@@ -12,7 +14,6 @@ DisplayMod display(OLED_RESET);
 //SDA to arduino pin A4
 void setup(){
 
-  Serial.begin(115200);
 
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C
 
@@ -20,49 +21,23 @@ void setup(){
   // Since the buffer is intialized with an Adafruit splashscreen
   // internally, this will display the splashscreen.
   display.setCursor(0,0);
-  display.setTextSize(3);
+  display.setTextSize(2);
   display.setTextColor(WHITE);
-  display.println("SaveMe Band");
+  display.println("SaveMeBand");
+  display.println();
+  display.println();
   display.display();//to show uploaded text
-  delay(1000);
+  delay(3000);
 
-}
-
-void week(int x){
-  //to get what week is it
-  String week;
-  switch (x) {
-    case(1):
-      week = "Sun";
-      break;
-    case(2):
-      week = "Mon";
-      break;
-    case(3):
-      week = "Tue";
-      break;
-    case(4):
-      week = "Wed";
-      break;
-    case(5):
-      week = "Thu";
-      break;
-    case(6):
-      week = "Fri";
-      break;
-    case(7):
-      week = "Sat";
-      break;
-  }
-  return x;
 }
 
 void loop(){
-
   display.clearDisplay();
-  display.setTextSize(2);
-  display.println(hour() + ":" + minute());
-  display.setTextSize(1);
-  display.println(week(weekday()) + "," + day() + "," + month());
-
+  display.setCursor(0,0);
+  display.print(count);
+  display.print(":");
+  display.println(count);
+  display.display();
+  ++count;
+  delay(1000);
 }
